@@ -1,61 +1,154 @@
 "use client";
 
-import { Settings, Bell, Globe, Shield, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { Footer } from "@/components/layout/footer";
+import { useToast } from "@/components/ui/toast";
 
 export default function SettingsPage() {
+  const { show } = useToast();
   const [notifications, setNotifications] = useState(true);
+  const [electionAlerts, setElectionAlerts] = useState(true);
   const [language, setLanguage] = useState("English");
   const [dataSharing, setDataSharing] = useState(false);
 
+  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      className={`relative w-11 h-6 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+        checked ? "bg-primary" : "bg-[#c6c8b7]"
+      }`}
+      aria-checked={checked}
+      role="switch"
+    >
+      <div
+        className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${
+          checked ? "left-6" : "left-1"
+        }`}
+      />
+    </button>
+  );
+
   return (
-    <div className="p-4 md:p-6 max-w-2xl mx-auto animate-fade-in">
-      <div className="flex items-center gap-2 text-xs text-violet-400 mb-2"><Settings className="w-3.5 h-3.5" />SETTINGS</div>
-      <h1 className="text-2xl font-bold text-[#fafafa] tracking-tight mb-1">Settings</h1>
-      <p className="text-[#71717a] text-sm mb-6">Manage your CivicLens preferences.</p>
-
-      <div className="space-y-4">
-        {/* Notifications */}
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-4">
-          <h2 className="text-sm font-semibold text-[#fafafa] mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-violet-400" />Notifications</h2>
-          <div className="flex items-center justify-between">
-            <div><p className="text-sm text-[#fafafa]">Election reminders</p><p className="text-xs text-[#71717a]">Get notified before voting phases</p></div>
-            <button onClick={() => setNotifications(!notifications)} className={cn("w-10 h-6 rounded-full transition-all relative", notifications ? "bg-violet-500" : "bg-[#27272a]")}>
-              <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", notifications ? "left-5" : "left-1")} />
-            </button>
+    <div className="min-h-full flex flex-col">
+      <main className="flex-1 p-6 md:p-8 max-w-3xl mx-auto w-full">
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-center gap-2 text-xs text-primary font-bold uppercase tracking-widest mb-1">
+            <span className="material-symbols-outlined text-[14px]">settings</span>
+            Preferences
           </div>
-        </div>
+          <h1 className="text-3xl font-bold text-on-surface">Settings</h1>
+          <p className="text-sm text-on-surface-variant mt-1">
+            Manage your CivicLens preferences and account settings.
+          </p>
+        </header>
 
-        {/* Language */}
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-4">
-          <h2 className="text-sm font-semibold text-[#fafafa] mb-3 flex items-center gap-2"><Globe className="w-4 h-4 text-violet-400" />Language</h2>
-          <select value={language} onChange={e => setLanguage(e.target.value)} className="w-full h-10 px-3 bg-[#111114] border border-[#27272a] rounded-lg text-sm text-[#fafafa] focus:outline-none focus:border-violet-500/50 cursor-pointer">
-            <option value="English">English</option>
-            <option value="Hindi">हिंदी (Hindi)</option>
-            <option value="Marathi">मराठी (Marathi)</option>
-          </select>
-        </div>
+        <div className="space-y-5">
+          {/* Notifications */}
+          <section className="bg-white rounded-2xl border border-[#d4c5a3] shadow-[0_4px_12px_rgba(68,86,20,0.05)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#e2e2e2] flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[20px]">notifications</span>
+              <h2 className="text-sm font-bold text-on-surface">Notifications</h2>
+            </div>
+            <div className="divide-y divide-[#f4f3f3]">
+              <div className="px-6 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-on-surface">Election reminders</p>
+                  <p className="text-xs text-on-surface-variant mt-0.5">Get notified before voting phases and deadlines</p>
+                </div>
+                <Toggle checked={notifications} onChange={() => {
+                  setNotifications(!notifications);
+                  show(notifications ? "Reminders disabled." : "Election reminders enabled!", notifications ? "info" : "success", "notifications");
+                }} />
+              </div>
+              <div className="px-6 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-on-surface">Civic alerts</p>
+                  <p className="text-xs text-on-surface-variant mt-0.5">Breaking news, fact-checks, and urgent updates</p>
+                </div>
+                <Toggle checked={electionAlerts} onChange={() => {
+                  setElectionAlerts(!electionAlerts);
+                  show(electionAlerts ? "Civic alerts disabled." : "Civic alerts enabled!", electionAlerts ? "info" : "success", "campaign");
+                }} />
+              </div>
+            </div>
+          </section>
 
-        {/* Privacy */}
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-4">
-          <h2 className="text-sm font-semibold text-[#fafafa] mb-3 flex items-center gap-2"><Shield className="w-4 h-4 text-violet-400" />Privacy</h2>
-          <div className="flex items-center justify-between">
-            <div><p className="text-sm text-[#fafafa]">Anonymous analytics</p><p className="text-xs text-[#71717a]">Help improve CivicLens (no personal data)</p></div>
-            <button onClick={() => setDataSharing(!dataSharing)} className={cn("w-10 h-6 rounded-full transition-all relative", dataSharing ? "bg-violet-500" : "bg-[#27272a]")}>
-              <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", dataSharing ? "left-5" : "left-1")} />
-            </button>
-          </div>
-        </div>
+          {/* Language */}
+          <section className="bg-white rounded-2xl border border-[#d4c5a3] shadow-[0_4px_12px_rgba(68,86,20,0.05)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#e2e2e2] flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[20px]">language</span>
+              <h2 className="text-sm font-bold text-on-surface">Language</h2>
+            </div>
+            <div className="px-6 py-4">
+              <p className="text-xs text-on-surface-variant mb-3">
+                Choose the language for AI explanations and civic content.
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                {["English", "Hindi", "Marathi"].map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => { setLanguage(lang); show(`Language set to ${lang}`, "info", "language"); }}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                      language === lang
+                        ? "bg-primary text-on-primary border-primary shadow-sm"
+                        : "bg-[#f4f3f3] text-on-surface border-[#c6c8b7] hover:border-primary hover:text-primary"
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
 
-        {/* Danger zone */}
-        <div className="bg-[#18181b] border border-[#ef4444]/20 rounded-xl p-4">
-          <h2 className="text-sm font-semibold text-[#ef4444] mb-3 flex items-center gap-2"><Trash2 className="w-4 h-4" />Danger Zone</h2>
-          <p className="text-xs text-[#71717a] mb-3">This will clear all your saved data, Civic Score, and preferences.</p>
-          <button onClick={() => { if (confirm("Are you sure? This cannot be undone.")) localStorage.clear(); }} className="px-4 py-2 bg-[#ef4444]/10 border border-[#ef4444]/30 text-[#ef4444] text-xs font-medium rounded-lg hover:bg-[#ef4444]/20 transition-all">
-            Clear All Data
-          </button>
+          {/* Privacy */}
+          <section className="bg-white rounded-2xl border border-[#d4c5a3] shadow-[0_4px_12px_rgba(68,86,20,0.05)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#e2e2e2] flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[20px]">shield</span>
+              <h2 className="text-sm font-bold text-on-surface">Privacy</h2>
+            </div>
+            <div className="px-6 py-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-on-surface">Anonymous analytics</p>
+                <p className="text-xs text-on-surface-variant mt-0.5">Help improve CivicLens (no personal data collected)</p>
+              </div>
+              <Toggle checked={dataSharing} onChange={() => {
+                setDataSharing(!dataSharing);
+                show(dataSharing ? "Analytics disabled." : "Thank you for helping improve CivicLens!", dataSharing ? "info" : "success", "analytics");
+              }} />
+            </div>
+          </section>
+
+          {/* Danger zone */}
+          <section className="bg-white rounded-2xl border border-error/30 shadow-[0_4px_12px_rgba(68,86,20,0.05)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-error/20 flex items-center gap-2">
+              <span className="material-symbols-outlined text-error text-[20px]">delete_forever</span>
+              <h2 className="text-sm font-bold text-error">Danger Zone</h2>
+            </div>
+            <div className="px-6 py-4">
+              <p className="text-xs text-on-surface-variant mb-4">
+                This will permanently clear all your saved data, Civic Score, and preferences. This action cannot be undone.
+              </p>
+              <button
+                onClick={() => {
+                  if (confirm("Are you sure? This cannot be undone.")) {
+                    localStorage.clear();
+                    show("All local data cleared.", "info", "delete_forever");
+                  }
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-error-container text-error border border-error/30 text-xs font-bold rounded-lg hover:bg-error hover:text-on-error active:scale-95 transition-all"
+              >
+                <span className="material-symbols-outlined text-[16px]">delete</span>
+                Clear All Data
+              </button>
+            </div>
+          </section>
         </div>
+      </main>
+
+      <div className="max-w-3xl mx-auto w-full px-8 mt-8">
+        <Footer />
       </div>
     </div>
   );
