@@ -29,6 +29,7 @@ export interface PollingBooth {
   waitTime: number;
   waitLevel: "low" | "medium" | "high";
   hasWheelchairAccess: boolean;
+  wheelchair: boolean; // alias for hasWheelchairAccess
   lat: number;
   lng: number;
   recommended?: boolean;
@@ -56,8 +57,10 @@ export interface FactCheckResult {
 
 export interface TrendingClaim {
   id: string;
+  claim: string;       // alias for snippet
   snippet: string;
   verdict: "TRUE" | "MISLEADING" | "FALSE";
+  time: string;        // alias for timeAgo
   timeAgo: string;
 }
 
@@ -138,6 +141,7 @@ export const POLLING_BOOTHS: PollingBooth[] = [
     waitTime: 5,
     waitLevel: "low",
     hasWheelchairAccess: true,
+    wheelchair: true,
     lat: 28.6139,
     lng: 77.209,
     recommended: true,
@@ -151,6 +155,7 @@ export const POLLING_BOOTHS: PollingBooth[] = [
     waitTime: 15,
     waitLevel: "medium",
     hasWheelchairAccess: false,
+    wheelchair: false,
     lat: 28.6119,
     lng: 77.207,
   },
@@ -163,6 +168,7 @@ export const POLLING_BOOTHS: PollingBooth[] = [
     waitTime: 45,
     waitLevel: "high",
     hasWheelchairAccess: true,
+    wheelchair: true,
     lat: 28.609,
     lng: 77.211,
   },
@@ -175,6 +181,7 @@ export const POLLING_BOOTHS: PollingBooth[] = [
     waitTime: 10,
     waitLevel: "low",
     hasWheelchairAccess: true,
+    wheelchair: true,
     lat: 28.615,
     lng: 77.2,
   },
@@ -274,27 +281,35 @@ export const ELECTION_EVENTS: ElectionEvent[] = [
 export const TRENDING_CLAIMS: TrendingClaim[] = [
   {
     id: "tc-1",
-    snippet: "Polling stations in Sector 4 will remain open an extra hour due to morning...",
+    snippet: "Polling stations in Sector 4 will remain open an extra hour due to morning delays.",
+    claim:   "Polling stations in Sector 4 will remain open an extra hour due to morning delays.",
     verdict: "TRUE",
     timeAgo: "2h ago",
+    time:    "2h ago",
   },
   {
     id: "tc-2",
     snippet: "Candidate X caught distributing cash in leaked midnight footage.",
+    claim:   "Candidate X caught distributing cash in leaked midnight footage.",
     verdict: "FALSE",
     timeAgo: "5h ago",
+    time:    "5h ago",
   },
   {
     id: "tc-3",
     snippet: "New tax policy will immediately reduce local business margins by 20%.",
+    claim:   "New tax policy will immediately reduce local business margins by 20%.",
     verdict: "MISLEADING",
     timeAgo: "1d ago",
+    time:    "1d ago",
   },
   {
     id: "tc-4",
     snippet: "EVM machines are connected to external WiFi networks during polling.",
+    claim:   "EVM machines are connected to external WiFi networks during polling.",
     verdict: "FALSE",
     timeAgo: "2d ago",
+    time:    "2d ago",
   },
 ];
 
