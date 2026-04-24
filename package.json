@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint --no-cache",
+    "type-check": "tsc --noEmit",
+    "ci": "npm run type-check && npm run build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -17,6 +19,7 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@react-google-maps/api": "^2.20.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^12.12.1",
