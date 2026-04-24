@@ -1,57 +1,47 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Public_Sans } from "next/font/google";
 import "./globals.css";
-import { Sidebar, MobileNav } from "@/components/layout/sidebar";
+import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { ToastProvider } from "@/components/ui/toast";
+import { AuthProvider } from "@/context/auth-context";
+
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  variable: "--font-public-sans",
+  weight: ["400", "500", "600", "700", "900"],
+});
 
 export const metadata: Metadata = {
-  title: {
-    default: "CivicLens — JanVote AI: Smart Civic Assistant for India",
-    template: "%s | CivicLens",
-  },
-  description:
-    "India's most trusted AI-powered election guide. Understand candidates, find your polling booth, detect fake news, and vote with confidence.",
-  keywords: [
-    "India elections",
-    "voter guide",
-    "Lok Sabha",
-    "AI civic assistant",
-    "fact check",
-    "polling booth",
-    "JanVote",
-  ],
-  authors: [{ name: "CivicLens" }],
-  openGraph: {
-    title: "CivicLens — JanVote AI",
-    description: "Your Smart Civic Assistant for India's Elections",
-    type: "website",
-  },
+  title: "CivicLens — Your Smart Civic Assistant",
+  description: "Empowering citizens with AI-driven insights, verifiable news, and transparent political tracking.",
+  keywords: ["India elections", "voter guide", "fact check", "civic AI", "democracy"],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
+      <head>
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-sans bg-[#09090b] text-[#fafafa] antialiased`}
+        className={`${publicSans.variable} font-sans bg-background text-on-background antialiased h-screen overflow-hidden flex selection:bg-primary-container selection:text-on-primary-container`}
       >
-        {/* Sidebar */}
-        <Sidebar />
-
-        {/* Topbar */}
-        <Topbar civicScore={850} />
-
-        {/* Main content */}
-        <main className="md:ml-[200px] mt-14 min-h-[calc(100vh-3.5rem)] pb-20 md:pb-0">
-          {children}
-        </main>
-
-        {/* Mobile bottom nav */}
-        <MobileNav />
+        <AuthProvider>
+          <ToastProvider>
+            <Sidebar />
+            <div className="flex-1 flex flex-col min-w-0 md:ml-64 h-full overflow-hidden">
+              <Topbar />
+              <main className="flex-1 overflow-y-auto w-full pb-16 md:pb-0">
+                {children}
+              </main>
+            </div>
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );
