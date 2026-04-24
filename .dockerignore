@@ -1,0 +1,34 @@
+# ── Dependencies & build output ──────────────────────────────────────────────
+node_modules
+.next
+out
+build
+
+# ── Environment secrets (NEVER ship these) ───────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Dev tools ────────────────────────────────────────────────────────────────
+.git
+.gitignore
+.github
+*.md
+!README.md
+
+# ── Editor / OS noise ────────────────────────────────────────────────────────
+.DS_Store
+.vscode
+.idea
+*.pem
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+
+# ── Test & coverage ───────────────────────────────────────────────────────────
+coverage
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
