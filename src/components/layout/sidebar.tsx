@@ -10,6 +10,7 @@ const NAV = [
   { label: "Candidate Match", icon: "person_search", href: "/candidates" },
   { label: "AI Explainer",    icon: "psychology",    href: "/explainer" },
   { label: "News Verifier",   icon: "fact_check",    href: "/fact-check" },
+  { label: "Policy Sandbox",  icon: "science",       href: "/sandbox" },
   { label: "Timeline",        icon: "event",         href: "/timeline" },
 ];
 
