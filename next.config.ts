@@ -52,6 +52,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy",            value: "strict-origin-when-cross-origin" },
           { key: "X-XSS-Protection",           value: "1; mode=block" },
           { key: "Permissions-Policy",         value: "camera=(), microphone=(), geolocation=(self)" },
+          { key: "Content-Security-Policy",    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://generativelanguage.googleapis.com https://maps.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src 'self' https://maps.google.com;" }
         ],
       },
     ];
