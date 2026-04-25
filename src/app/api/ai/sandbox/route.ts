@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callGemini } from "@/lib/gemini";
-import { getClientIp, checkRateLimit } from "@/lib/rate-limit";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 // Use Edge runtime for maximum efficiency
 export const runtime = "edge";
@@ -8,7 +8,8 @@ export const runtime = "edge";
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
-    if (!checkRateLimit(ip)) {
+    const limit = await rateLimit(`sandbox:${ip}`);
+    if (!limit.success) {
       return NextResponse.json(
         { error: "Rate limit exceeded. Please wait a moment." },
         { status: 429 }

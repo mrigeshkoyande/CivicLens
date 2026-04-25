@@ -44,6 +44,6 @@ export async function POST(req: NextRequest) {
     system: systemPrompt,
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }
 
