@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 // Gemini AI client wrapper with fallbacks
 
 const GEMINI_API_URL =
@@ -11,7 +13,17 @@ interface GeminiResponse {
   }>;
 }
 
-async function callGemini(prompt: string): Promise<string> {
+// Simple in-memory cache for efficiency
+const aiCache = new Map<string, { result: string; timestamp: number }>();
+const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+
+export async function callGemini(prompt: string, temperature = 0.7): Promise<string> {
+  const cacheKey = JSON.stringify({ prompt, temperature });
+  const cached = aiCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.result;
+  }
+
   const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -24,7 +36,7 @@ async function callGemini(prompt: string): Promise<string> {
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        temperature: 0.7,
+        temperature,
         maxOutputTokens: 1024,
         topP: 0.9,
       },
@@ -46,7 +58,10 @@ async function callGemini(prompt: string): Promise<string> {
   }
 
   const data: GeminiResponse = await response.json();
-  return data.candidates[0]?.content?.parts[0]?.text ?? "";
+  const result = data.candidates[0]?.content?.parts[0]?.text ?? "";
+  
+  aiCache.set(cacheKey, { result, timestamp: Date.now() });
+  return result;
 }
 
 // ─── Explainer ────────────────────────────────────────────────────────────────
@@ -85,13 +100,14 @@ Important rules:
 
 // ─── Fact Checker ─────────────────────────────────────────────────────────────
 
-export interface FactCheckOutput {
-  verdict: "TRUE" | "MISLEADING" | "FALSE";
-  confidence: number;
-  reasoning: string;
-  points: string[];
-  claim: string;
-}
+export const FactCheckSchema = z.object({
+  verdict: z.enum(["TRUE", "MISLEADING", "FALSE"]),
+  confidence: z.number().min(0).max(100),
+  reasoning: z.string(),
+  points: z.array(z.string()).optional()
+});
+
+export type FactCheckOutput = z.infer<typeof FactCheckSchema> & { claim: string };
 
 export async function checkFact(claim: string): Promise<FactCheckOutput> {
   const prompt = `You are a fact-checking AI for Indian elections. Analyze the following claim and respond ONLY with valid JSON (no markdown, no explanation outside JSON).
@@ -111,18 +127,24 @@ Rules:
 - Base your analysis on known facts about Indian democracy and election law
 - confidence should reflect how certain you are`;
 
-  const raw = await callGemini(prompt);
+  const raw = await callGemini(prompt, 0.1); // Low temp for JSON stability
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("Invalid JSON from Gemini");
 
-  const parsed = JSON.parse(jsonMatch[0]);
-  return {
-    verdict: parsed.verdict,
-    confidence: parsed.confidence,
-    reasoning: parsed.reasoning,
-    points: parsed.points ?? [],
-    claim,
-  };
+  try {
+    const parsed = JSON.parse(jsonMatch[0]);
+    // Validate structural integrity with Zod
+    const validatedData = FactCheckSchema.parse(parsed);
+    
+    return {
+      ...validatedData,
+      points: validatedData.points ?? [],
+      claim,
+    };
+  } catch (error) {
+    console.error("Zod Validation Error or JSON Parse Error:", error);
+    throw new Error("AI returned malformed or invalid response structure");
+  }
 }
 
 // ─── Manifesto Summarizer ─────────────────────────────────────────────────────
