@@ -54,7 +54,7 @@ export function Topbar() {
         {/* Search */}
         <form onSubmit={handleSearch} className="flex-1 max-w-md hidden sm:flex">
           <div className="w-full flex items-center bg-white rounded-full px-3.5 py-1.5 border border-[#c6c8b7] focus-within:border-[#445614] focus-within:ring-2 focus-within:ring-[#445614]/15 transition-all shadow-sm">
-            <button type="submit" className="text-[#76786a] hover:text-[#445614] transition-colors shrink-0">
+            <button type="submit" className="text-[#76786a] hover:text-[#445614] transition-colors shrink-0" aria-label="Submit search">
               <span className="material-symbols-outlined text-[18px]">search</span>
             </button>
             <input
@@ -64,7 +64,7 @@ export function Topbar() {
               placeholder="Search topics, ask AI…"
             />
             {query && (
-              <button type="button" onClick={() => setQuery("")} className="text-[#76786a] hover:text-on-surface shrink-0 transition-colors">
+              <button type="button" onClick={() => setQuery("")} className="text-[#76786a] hover:text-on-surface shrink-0 transition-colors" aria-label="Clear search">
                 <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             )}
@@ -84,6 +84,7 @@ export function Topbar() {
             <button
               onClick={() => { setShowNotifs(!showNotifs); setShowUserMenu(false); }}
               className="relative p-2 text-[#50462c] hover:text-[#445614] hover:bg-white/70 rounded-xl transition-colors"
+              aria-label="Notifications"
             >
               <span className="material-symbols-outlined text-[22px]">notifications</span>
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error border-2 border-[var(--topbar-bg)]" />
@@ -123,6 +124,8 @@ export function Topbar() {
               <button
                 onClick={() => { setShowUserMenu(!showUserMenu); setShowNotifs(false); }}
                 className="flex items-center gap-2 bg-white border border-[#c6c8b7] px-2 py-1.5 rounded-full hover:border-primary transition-colors shadow-sm"
+                aria-label="User menu"
+                aria-expanded={showUserMenu}
               >
                 {user.photoURL ? (
                   <Image src={user.photoURL} alt={user.displayName ?? "User"} width={24} height={24} className="rounded-full object-cover" />
