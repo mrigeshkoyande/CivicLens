@@ -4,29 +4,29 @@ import { useState } from "react";
 import { Footer } from "@/components/layout/footer";
 import { useToast } from "@/components/ui/toast";
 
+const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+  <button
+    onClick={onChange}
+    className={`relative w-11 h-6 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+      checked ? "bg-primary" : "bg-[#c6c8b7]"
+    }`}
+    aria-checked={checked}
+    role="switch"
+  >
+    <div
+      className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${
+        checked ? "left-6" : "left-1"
+      }`}
+    />
+  </button>
+);
+
 export default function SettingsPage() {
   const { show } = useToast();
   const [notifications, setNotifications] = useState(true);
   const [electionAlerts, setElectionAlerts] = useState(true);
   const [language, setLanguage] = useState("English");
   const [dataSharing, setDataSharing] = useState(false);
-
-  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
-    <button
-      onClick={onChange}
-      className={`relative w-11 h-6 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/30 ${
-        checked ? "bg-primary" : "bg-[#c6c8b7]"
-      }`}
-      aria-checked={checked}
-      role="switch"
-    >
-      <div
-        className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${
-          checked ? "left-6" : "left-1"
-        }`}
-      />
-    </button>
-  );
 
   return (
     <div className="min-h-full flex flex-col">
