@@ -60,6 +60,9 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
       <div className="bg-white rounded-3xl shadow-[0_24px_64px_rgba(0,0,0,0.15)] w-full max-w-md overflow-hidden animate-slide-up">
         {/* Header */}
@@ -76,7 +79,7 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
             </div>
             <span className="text-xl font-black text-primary tracking-tight">CivicLens</span>
           </div>
-          <h2 className="text-2xl font-bold text-on-surface mt-3">
+          <h2 id="modal-title" className="text-2xl font-bold text-on-surface mt-3">
             {tab === "login" ? "Welcome back!" : "Join CivicLens"}
           </h2>
           <p className="text-sm text-on-surface-variant mt-1">
