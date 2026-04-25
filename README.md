@@ -26,6 +26,7 @@
 | 🤖 **AI Explainer** | Gemini-powered chat in English, Hindi & Marathi with "Explain like I'm 15" mode |
 | 📍 **Smart Booth Finder** | Find nearest polling booths with wait times, wheelchair access, and directions |
 | ⚖️ **Candidate Comparison** | Side-by-side profiles with AI-simplified manifestos, criminal records, and performance metrics |
+| 🧪 **Manifesto Sandbox** | Interactive macroeconomic simulator to test feasibility of political promises |
 | 🔍 **Fact-Check Lab** | Paste any claim → Gemini returns verdict (TRUE/MISLEADING/FALSE) with reasoning |
 | 📅 **Election Timeline** | Live countdown to next phase, all election dates with reminders |
 | ♿ **Accessibility Mode** | Large text, TTS voice output, simplified UI, high contrast |
