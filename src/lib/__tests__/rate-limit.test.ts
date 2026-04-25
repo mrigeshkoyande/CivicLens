@@ -1,5 +1,16 @@
 import { rateLimit, getClientIp } from '../rate-limit';
 
+jest.mock('@upstash/redis', () => ({
+  Redis: { fromEnv: jest.fn() }
+}));
+
+jest.mock('@upstash/ratelimit', () => ({
+  Ratelimit: jest.fn().mockImplementation(() => ({
+    limit: jest.fn()
+  }))
+}));
+
+
 describe('rate-limit', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -10,35 +21,35 @@ describe('rate-limit', () => {
     jest.useRealTimers();
   });
 
-  it('allows requests within limit', () => {
+  it('allows requests within limit', async () => {
     const id = 'test-ip';
-    const result1 = rateLimit(id, { limit: 2, windowMs: 1000 });
+    const result1 = await rateLimit(id, { limit: 2, windowMs: 1000 });
     expect(result1.success).toBe(true);
     expect(result1.remaining).toBe(1);
 
-    const result2 = rateLimit(id, { limit: 2, windowMs: 1000 });
+    const result2 = await rateLimit(id, { limit: 2, windowMs: 1000 });
     expect(result2.success).toBe(true);
     expect(result2.remaining).toBe(0);
   });
 
-  it('blocks requests over limit', () => {
+  it('blocks requests over limit', async () => {
     const id = 'test-ip-2';
-    rateLimit(id, { limit: 1, windowMs: 1000 });
-    const result = rateLimit(id, { limit: 1, windowMs: 1000 });
+    await rateLimit(id, { limit: 1, windowMs: 1000 });
+    const result = await rateLimit(id, { limit: 1, windowMs: 1000 });
     expect(result.success).toBe(false);
     expect(result.remaining).toBe(0);
   });
 
-  it('resets after window expires', () => {
+  it('resets after window expires', async () => {
     const id = 'test-ip-3';
-    rateLimit(id, { limit: 1, windowMs: 1000 });
+    await rateLimit(id, { limit: 1, windowMs: 1000 });
     
-    let result = rateLimit(id, { limit: 1, windowMs: 1000 });
+    let result = await rateLimit(id, { limit: 1, windowMs: 1000 });
     expect(result.success).toBe(false);
 
     jest.advanceTimersByTime(1001);
 
-    result = rateLimit(id, { limit: 1, windowMs: 1000 });
+    result = await rateLimit(id, { limit: 1, windowMs: 1000 });
     expect(result.success).toBe(true);
   });
 

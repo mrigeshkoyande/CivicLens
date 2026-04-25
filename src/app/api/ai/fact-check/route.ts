@@ -17,7 +17,7 @@ const MOCK_RESULT = {
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const limit = rateLimit(`factcheck:${ip}`, { limit: 8, windowMs: 60_000 });
+  const limit = await rateLimit(`factcheck:${ip}`, { limit: 8, windowMs: 60_000 });
   if (!limit.success) {
     return NextResponse.json(
       { error: "Too many requests. Please wait." },

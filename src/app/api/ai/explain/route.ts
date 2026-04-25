@@ -1,49 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import { explainConcept } from "@/lib/gemini";
+import { NextRequest } from "next/server";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
-import { FALLBACK_RESPONSES } from "@/lib/mock-data";
+import { streamText } from 'ai';
+import { google } from '@ai-sdk/google';
+
+export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   // Rate limit
   const ip = getClientIp(req);
-  const limit = rateLimit(`explain:${ip}`, { limit: 15, windowMs: 60_000 });
+  const limit = await rateLimit(`explain:${ip}`, { limit: 15, windowMs: 60_000 });
   if (!limit.success) {
-    return NextResponse.json(
-      { error: "Too many requests. Please wait a moment." },
-      { status: 429 }
-    );
+    return new Response(JSON.stringify({ error: "Too many requests. Please wait a moment." }), { status: 429 });
   }
 
-  // Validate input
-  let body: { question?: string; language?: string; simplify?: boolean };
+  // Parse standard Vercel AI SDK 'messages' format
+  let body: { messages: any[], language?: string, simplify?: boolean };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400 });
   }
 
-  const question = body.question?.trim();
-  const language = body.language ?? "English";
-  const simplify = body.simplify ?? false;
-
-  if (!question || question.length < 3) {
-    return NextResponse.json({ error: "Question too short" }, { status: 400 });
-  }
-  if (question.length > 500) {
-    return NextResponse.json(
-      { error: "Question too long (max 500 chars)" },
-      { status: 400 }
-    );
+  const { messages, language = "English", simplify = false } = body;
+  
+  if (!messages || messages.length === 0) {
+    return new Response(JSON.stringify({ error: "Missing messages" }), { status: 400 });
   }
 
-  // Try Gemini, fall back to mock
-  try {
-    const answer = await explainConcept(question, language, simplify);
-    return NextResponse.json({ answer, source: "gemini" });
-  } catch {
-    const fallback =
-      FALLBACK_RESPONSES[question as keyof typeof FALLBACK_RESPONSES] ??
-      FALLBACK_RESPONSES["default"];
-    return NextResponse.json({ answer: fallback, source: "fallback" });
-  }
+  const langInstruction =
+    language === "Hindi" ? "Respond in Hindi."
+    : language === "Marathi" ? "Respond in Marathi."
+    : "Respond in English.";
+
+  const levelInstruction = simplify
+    ? "Explain like you're talking to a 15-year-old. Use simple words."
+    : "Provide a clear, informative answer suitable for an educated adult citizen.";
+
+  const systemPrompt = `You are JanVote AI, a trustworthy civic education assistant. ${langInstruction} ${levelInstruction} Keep it concise.`;
+
+  const result = await streamText({
+    model: google('gemini-1.5-flash'),
+    messages,
+    system: systemPrompt,
+  });
+
+  return result.toDataStreamResponse();
 }
+
