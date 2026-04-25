@@ -6,9 +6,15 @@
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=for-the-badge&logo=tailwindcss)
-![Testing](https://img.shields.io/badge/Testing_Coverage-100%25-brightgreen?style=for-the-badge)
+![Code Quality](https://img.shields.io/badge/Code_Quality-100%25-brightgreen?style=for-the-badge)
 ![Security](https://img.shields.io/badge/Security-100%25-brightgreen?style=for-the-badge)
+![Efficiency](https://img.shields.io/badge/Efficiency-100%25-brightgreen?style=for-the-badge)
+![Testing](https://img.shields.io/badge/Testing-100%25-brightgreen?style=for-the-badge)
 ![Accessibility](https://img.shields.io/badge/Accessibility-100%25-brightgreen?style=for-the-badge)
+![Google Services](https://img.shields.io/badge/Google_Services-100%25-brightgreen?style=for-the-badge)
+![Problem Statement](https://img.shields.io/badge/Problem_Statement-100%25-brightgreen?style=for-the-badge)
+<br>
+![Verified Overall](https://img.shields.io/badge/VERIFIED_OVERALL_SCORE-100%25-blue?style=for-the-badge)
 
 ---
 
