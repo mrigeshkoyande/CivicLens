@@ -144,22 +144,23 @@ gcloud run deploy civiclens \
 
 - **Framework**: Next.js 15 (App Router) + TypeScript
 - **Styling**: Tailwind CSS (Obsidian dark theme)
-- **AI**: Google Gemini 1.5 Flash
+- **AI**: Google Gemini 1.5 Flash (Vercel AI SDK Streaming)
 - **Maps**: Google Maps JavaScript API
 - **Auth/DB**: Firebase Auth + Firestore
-- **Icons**: Lucide React
-- **Animations**: CSS keyframes + Framer Motion ready
-- **Deployment**: Google Cloud Run
+- **Analytics**: Google Cloud BigQuery
+- **Security**: Upstash Serverless Redis Rate Limiter
+- **Testing**: Jest (Unit) + Playwright (E2E)
+- **Deployment**: Google Cloud Run / Vercel Edge
 
 ---
 
 ## 🔒 Security
 
-- All API keys stored in server-side environment variables
-- Per-IP rate limiting on all AI endpoints (10-15 req/min)
+- All API keys stored securely in server-side Edge environments
+- Distributed DDoS protection via **Upstash Redis** on all AI endpoints (10-15 req/min)
+- Strict `Zod` schema validation protecting the client from LLM hallucinations
 - Input validation and sanitization on all API routes
 - Content safety filters enabled on Gemini API calls
-- No client-side exposure of secret keys
 
 ---
 
